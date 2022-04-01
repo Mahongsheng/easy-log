@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class EasyLogController {
 
-    @EasyLog(operationType = "test")
+    @EasyLog(operationType = "test", asyncMode = false)
     @GetMapping("/")
     public String hello() {
         return "hello";

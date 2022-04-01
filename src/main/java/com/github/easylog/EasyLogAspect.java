@@ -6,8 +6,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Method;
 
 /**
@@ -17,6 +19,9 @@ import java.lang.reflect.Method;
 @Component
 @Aspect
 public class EasyLogAspect {
+
+    @Autowired
+    private EasyLogExecutor easyLogExecutor;
 
     /**
      * 切入点
@@ -34,41 +39,15 @@ public class EasyLogAspect {
      */
     @Around("easyLogPointCut()")
     public Object easyLogAdvice(ProceedingJoinPoint point) throws Throwable {
-
-
-        // 1.方法执行前的处理，相当于前置通知
         // 获取方法签名
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         // 获取方法
         Method method = methodSignature.getMethod();
         // 获取方法上面的注解
-        EasyLog logAnno = method.getAnnotation(EasyLog.class);
-        // 获取操作描述的属性值
-        String operateType = logAnno.operationType();
-        // 创建一个日志对象(准备记录日志)
-        RecordData recordData = new RecordData();
-        recordData.setOperateType(operateType);// 操作说明
-
-        EasyLogExecutor easyLogExecutor = new EasyLogExecutor();
-
-        // 整合了Struts，所有用这种方式获取session中属性(亲测有效)
-//        User user = (User) ServletActionContext.getRequest().getSession().getAttribute("userinfo");//获取session中的user对象进而获取操作人名字
-//        logtable.setOperateor(user.getUsername());// 设置操作人
-
-        Object result = null;
-        try {
-            //让代理方法执行
-            result = easyLogExecutor.execute(point, recordData);
-            // 2.相当于后置通知(方法成功执行之后走这里)
-//            logtable.setOperateresult("正常");// 设置操作结果
-        } catch (Exception e) {
-            // 3.相当于异常通知部分
-//            logtable.setOperateresult("失败");// 设置操作结果
-        } finally {
-            // 4.相当于最终通知
-//            logtable.setOperatedate(new Date());// 设置操作日期
-//            logtableService.addLog(logtable);// 添加日志记录
+        EasyLog easyLog = method.getAnnotation(EasyLog.class);
+        if (easyLog == null) { // 注解并不在方法上，而是在类上
+            easyLog = point.getTarget().getClass().getAnnotation(EasyLog.class);
         }
-        return result;
+        return easyLogExecutor.execute(point, easyLog);
     }
 }
