@@ -4,12 +4,15 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+
 /**
- * @author EalenXie create on 2021/1/4 11:19
+ * 定义配置类
+ *
+ * @author Hansel Ma
+ * @since 2022/3/31
  */
-@ComponentScan
+@ComponentScan("com.github.easylog")
 @Configuration
 @EnableAspectJAutoProxy(exposeProxy = true)
 public class EasyLogAutoConfiguration {
-
 }

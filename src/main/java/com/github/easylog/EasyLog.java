@@ -8,6 +8,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * EasyLog注解，可用于类或方法体上
+ *
+ * @author Hansel Ma
+ * @since 2022/3/27
+ */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EasyLog {
@@ -23,7 +29,7 @@ public @interface EasyLog {
     boolean recordOnError() default false;
 
     /**
-     * 当发生异常时,AOP是否追加异常堆栈信息到content
+     * 是否在发生异常时追加异常堆栈信息
      */
     boolean stackTraceOnErr() default false;
 

@@ -3,8 +3,10 @@ package com.github.easylog.recorder;
 import com.github.easylog.entity.RecordData;
 
 /**
- * @author: Hansel Ma
- * @date: 2022/3/31
+ * 默认的Recorder
+ *
+ * @author Hansel Ma
+ * @since 2022/3/31
  */
 public class DefaultLogRecorder implements LogRecorder {
 

@@ -16,8 +16,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * @author: Hansel Ma
- * @date: 2022/3/30
+ * EasyLog执行器
+ *
+ * @author Hansel Ma
+ * @since 2022/3/30
  */
 @Component
 public class EasyLogExecutor {
@@ -63,11 +65,19 @@ public class EasyLogExecutor {
         }
     }
 
+    /**
+     * 执行连接点并进行日志记录
+     *
+     * @param point   连接点
+     * @param easyLog EasyLog注解
+     * @return 连接点执行结果
+     * @throws Throwable 异常
+     */
     public Object execute(ProceedingJoinPoint point, EasyLog easyLog) throws Throwable {
         Object result = null;
         boolean isSuccess = false;
-        RecordDataPool.removeRecordData();
-        RecordData data = RecordDataPool.getRecordData();
+        EasyLogDataPool.removeRecordData();
+        RecordData data = EasyLogDataPool.getRecordData();
         try {
             result = point.proceed();
             isSuccess = true;
@@ -76,7 +86,7 @@ public class EasyLogExecutor {
             if (easyLog.stackTraceOnErr()) {
                 try (StringWriter sw = new StringWriter(); PrintWriter writer = new PrintWriter(sw, true)) {
                     throwable.printStackTrace(writer);
-                    RecordDataPool.step("Fail : \n" + sw);
+                    EasyLogDataPool.step("Fail : \n" + sw);
                 }
             }
             throw throwable;
@@ -89,9 +99,9 @@ public class EasyLogExecutor {
                 data.setMethod(signature.getDeclaringTypeName() + "#" + signature.getName());
                 data.setSuccess(isSuccess);
                 if (easyLog.asyncMode()) {
-//                    recorderExecutor.asyncExecute(selectLogCollector(aopLog.getCollector()), LogData.getCurrent());
+                    recorderExecutor.asyncExecute(selectLogCollector(easyLog.recorder()), EasyLogDataPool.getRecordData());
                 } else {
-                    recorderExecutor.execute(selectLogCollector(easyLog.recorder()), RecordDataPool.getRecordData());
+                    recorderExecutor.execute(selectLogCollector(easyLog.recorder()), EasyLogDataPool.getRecordData());
                 }
             }
         }

@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.github.easylog.recorder.RecorderExecutor,\
+  com.github.easylog.EasyLogExecutor,\
+  com.github.easylog.EasyLogDataPool,\
+  com.github.easylog.config.EasyLogAutoConfiguration

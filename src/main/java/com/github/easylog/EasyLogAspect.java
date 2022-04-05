@@ -1,6 +1,5 @@
 package com.github.easylog;
 
-import com.github.easylog.entity.RecordData;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -9,12 +8,13 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.lang.reflect.Method;
 
 /**
- * @author: Hansel Ma
- * @date: 2022/3/27
+ * EasyLog切面
+ *
+ * @author Hansel Ma
+ * @since 2022/3/27
  */
 @Component
 @Aspect
@@ -24,14 +24,14 @@ public class EasyLogAspect {
     private EasyLogExecutor easyLogExecutor;
 
     /**
-     * 切入点
+     * 切点，拦截标注在类上的注解和标注在方法体上的注解
      */
-    @Pointcut("@annotation(EasyLog) || @within(EasyLog)")
+    @Pointcut("@within(EasyLog) || @annotation(EasyLog)")
     public void easyLogPointCut() {
     }
 
     /**
-     * 通知(Advice)，在此进行日志处理
+     * 通知，在此进行日志处理
      *
      * @param point 连接点(JoinPoint)
      * @return 方法执行结果

@@ -9,8 +9,8 @@ import java.util.Date;
 /**
  * 日志记录实体类
  *
- * @author: Hansel Ma
- * @date: 2022/3/30
+ * @author Hansel Ma
+ * @date 2022/3/30
  */
 @NoArgsConstructor
 @Setter
@@ -24,7 +24,9 @@ public class RecordData {
      * 线程StringBuilder对象 主要用于追加字段到最终的content
      */
     private static final ThreadLocal<StringBuilder> CONTENT_BUILDER = new ThreadLocal<>();
-
+    /**
+     * 操作类型
+     */
     private String operateType;
     /**
      * 应用名
