@@ -76,8 +76,8 @@ public class EasyLogExecutor {
     public Object execute(ProceedingJoinPoint point, EasyLog easyLog) throws Throwable {
         Object result = null;
         boolean isSuccess = false;
-        EasyLogDataPool.removeRecordData();
-        RecordData data = EasyLogDataPool.getRecordData();
+        EasyLogData.removeRecordData();
+        RecordData data = EasyLogData.getRecordData();
         try {
             result = point.proceed();
             isSuccess = true;
@@ -86,7 +86,7 @@ public class EasyLogExecutor {
             if (easyLog.stackTraceOnErr()) {
                 try (StringWriter sw = new StringWriter(); PrintWriter writer = new PrintWriter(sw, true)) {
                     throwable.printStackTrace(writer);
-                    EasyLogDataPool.step("Fail : \n" + sw);
+                    EasyLogData.step("Fail : \n" + sw);
                 }
             }
             throw throwable;
@@ -95,13 +95,14 @@ public class EasyLogExecutor {
                 data.setAppName(appName);
                 data.setCostTime(System.currentTimeMillis() - data.getLogDate().getTime());
                 MethodSignature signature = (MethodSignature) point.getSignature();
-                data.setTag(easyLog.operationType());
+                data.setOperateType(easyLog.operationType());
                 data.setMethod(signature.getDeclaringTypeName() + "#" + signature.getName());
                 data.setSuccess(isSuccess);
+                EasyLogData.setRecordData(data);
                 if (easyLog.asyncMode()) {
-                    recorderExecutor.asyncExecute(selectLogCollector(easyLog.recorder()), EasyLogDataPool.getRecordData());
+                    recorderExecutor.asyncExecute(selectLogCollector(easyLog.recorder()), EasyLogData.getRecordData());
                 } else {
-                    recorderExecutor.execute(selectLogCollector(easyLog.recorder()), EasyLogDataPool.getRecordData());
+                    recorderExecutor.execute(selectLogCollector(easyLog.recorder()), EasyLogData.getRecordData());
                 }
             }
         }

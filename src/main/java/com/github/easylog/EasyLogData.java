@@ -10,7 +10,7 @@ import java.util.Date;
  * @author Hansel Ma
  * @since 2022/3/31
  */
-public class EasyLogDataPool {
+public class EasyLogData {
 
     /**
      * 日志数据
@@ -31,7 +31,6 @@ public class EasyLogDataPool {
         if (CONTENT_BUILDER.get() != null) {
             recordData.setContent(CONTENT_BUILDER.get().toString());
         }
-        RECORD_DATA.set(recordData);
     }
 
     /**
@@ -67,7 +66,7 @@ public class EasyLogDataPool {
     public static void step(String step) {
         StringBuilder sb = CONTENT_BUILDER.get();
         if (sb != null) {
-            sb.append(step).append("\n");
+            sb.append(step).append(" ");
             CONTENT_BUILDER.set(sb);
         }
     }

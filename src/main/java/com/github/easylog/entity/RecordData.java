@@ -17,14 +17,6 @@ import java.util.Date;
 @Getter
 public class RecordData {
     /**
-     * 线程RecordData对象
-     */
-    private static final ThreadLocal<RecordData> LOG_DATA = new ThreadLocal<>();
-    /**
-     * 线程StringBuilder对象 主要用于追加字段到最终的content
-     */
-    private static final ThreadLocal<StringBuilder> CONTENT_BUILDER = new ThreadLocal<>();
-    /**
      * 操作类型
      */
     private String operateType;
@@ -33,34 +25,6 @@ public class RecordData {
      */
     private String appName;
     /**
-     * 主机
-     */
-    private String host;
-    /**
-     * 端口号
-     */
-    private Integer port;
-    /**
-     * 请求Ip
-     */
-    private String clientIp;
-    /**
-     * 请求地址
-     */
-    private String reqUrl;
-    /**
-     * http请求method
-     */
-    private String httpMethod;
-    /**
-     * 请求头部信息(可选择记录)
-     */
-    private Object headers;
-    /**
-     * 操作标签
-     */
-    private String tag;
-    /**
      * 方法内容
      */
     private String content;
@@ -68,14 +32,6 @@ public class RecordData {
      * 操作方法
      */
     private String method;
-    /**
-     * 参数
-     */
-    private Object args;
-    /**
-     * 响应体
-     */
-    private Object respBody;
     /**
      * 操作日期(调用日期)
      */

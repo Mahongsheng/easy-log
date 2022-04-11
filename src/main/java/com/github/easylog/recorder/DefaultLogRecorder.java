@@ -1,6 +1,7 @@
 package com.github.easylog.recorder;
 
 import com.github.easylog.entity.RecordData;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 默认的Recorder
@@ -8,11 +9,11 @@ import com.github.easylog.entity.RecordData;
  * @author Hansel Ma
  * @since 2022/3/31
  */
+@Slf4j
 public class DefaultLogRecorder implements LogRecorder {
 
     @Override
     public void record(RecordData data) {
-        System.out.println(data.getAppName());
-        System.out.println("这是一个默认的日志记录器");
+        log.info(data.toString());
     }
 }
