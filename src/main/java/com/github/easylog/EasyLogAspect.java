@@ -46,7 +46,8 @@ public class EasyLogAspect {
         // 获取方法上面的注解
         EasyLog easyLog = method.getAnnotation(EasyLog.class);
         if (easyLog == null) { // 注解并不在方法上，而是在类上
-            easyLog = point.getTarget().getClass().getAnnotation(EasyLog.class);
+            Class<?> clazz = point.getTarget().getClass();
+            easyLog = clazz.getAnnotation(EasyLog.class);
         }
         return easyLogExecutor.execute(point, easyLog);
     }

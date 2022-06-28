@@ -33,6 +33,12 @@ public class EasyLogExecutor {
         this.appName = getAppName(applicationContext);
     }
 
+    /**
+     * 获取当前服务的名字
+     *
+     * @param applicationContext 服务上下文
+     * @return 服务名字
+     */
     public String getAppName(ApplicationContext applicationContext) {
         Environment environment = applicationContext.getEnvironment();
         String name = environment.getProperty("spring.application.name");
@@ -51,7 +57,11 @@ public class EasyLogExecutor {
         return applicationContext.getApplicationName();
     }
 
-    private LogRecorder selectLogCollector(Class<? extends LogRecorder> clz) {
+    /**
+     * 选择日志收集器
+     */
+    private LogRecorder selectLogRecorder(Class<? extends LogRecorder> clz) {
+
         if (clz == DefaultLogRecorder.class || clz == null) {
             return new DefaultLogRecorder();
         } else {
@@ -74,15 +84,17 @@ public class EasyLogExecutor {
      * @throws Throwable 异常
      */
     public Object execute(ProceedingJoinPoint point, EasyLog easyLog) throws Throwable {
-        Object result = null;
+        Object result;
         boolean isSuccess = false;
         EasyLogData.removeRecordData();
         RecordData data = EasyLogData.getRecordData();
         try {
+            // 执行切点
             result = point.proceed();
             isSuccess = true;
             return result;
         } catch (Throwable throwable) {
+            // 抛出异常，进行异常记录
             if (easyLog.stackTraceOnErr()) {
                 try (StringWriter sw = new StringWriter(); PrintWriter writer = new PrintWriter(sw, true)) {
                     throwable.printStackTrace(writer);
@@ -91,18 +103,21 @@ public class EasyLogExecutor {
             }
             throw throwable;
         } finally {
+            // 判断是否只在抛出异常时执行以及切点是否执行成功
             if (!easyLog.recordOnError() || !data.isSuccess()) {
                 data.setAppName(appName);
                 data.setCostTime(System.currentTimeMillis() - data.getLogDate().getTime());
-                MethodSignature signature = (MethodSignature) point.getSignature();
                 data.setOperateType(easyLog.operationType());
-                data.setMethod(signature.getDeclaringTypeName() + "#" + signature.getName());
                 data.setSuccess(isSuccess);
+
+                MethodSignature signature = (MethodSignature) point.getSignature();
+                data.setMethod(signature.getDeclaringTypeName() + "#" + signature.getName());
+
                 EasyLogData.setRecordData(data);
-                if (easyLog.asyncMode()) {
-                    recorderExecutor.asyncExecute(selectLogCollector(easyLog.recorder()), EasyLogData.getRecordData());
+                if (easyLog.asyncMode()) { // 异步或同步执行
+                    recorderExecutor.asyncExecute(selectLogRecorder(easyLog.recorder()), EasyLogData.getRecordData());
                 } else {
-                    recorderExecutor.execute(selectLogCollector(easyLog.recorder()), EasyLogData.getRecordData());
+                    recorderExecutor.execute(selectLogRecorder(easyLog.recorder()), EasyLogData.getRecordData());
                 }
             }
         }

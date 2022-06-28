@@ -20,7 +20,7 @@ public class RecorderExecutor {
      * @param recorder Recorder
      * @param data     日志数据
      */
-    @Async
+    @Async("threadPoolForRecorder")
     public <T> void asyncExecute(Recorder<T> recorder, T data) {
         recorder.record(data);
     }
