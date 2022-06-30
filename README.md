@@ -6,9 +6,9 @@
 
 ```xml
 <dependency>
-	<groupId>com.github.hanselma</groupId>
-	<artifactId>easy-log</artifactId>
-	<version>1.0.0</version>
+    <groupId>com.github.hanselma</groupId>
+    <artifactId>easy-log</artifactId>
+    <version>1.0.0</version>
 </dependency>
 ```
 
